@@ -1,24 +1,30 @@
 # Rakurai
 
-TODO: Write a gem description
+Rakurai is basic auth pass server
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'rakurai'
-
 And then execute:
 
-    $ bundle
+    $ bundle install 
 
-Or install it yourself as:
+## Configuration
 
-    $ gem install rakurai
+Write config.yaml
+
+```yaml
+---
+base_uri: "http://localhost"
+username: "user"
+password: "pass"
+port: 9000
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```shell
+$ bundle exec bin/rakurai
+```
 
 ## Contributing
 
