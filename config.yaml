@@ -1,0 +1,5 @@
+---
+base_uri: "http://localhost"
+username: "user"
+password: "pass"
+port: 9000

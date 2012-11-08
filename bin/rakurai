@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+$: << './lib/'
+require './lib/rakurai'
+
+Rakurai.start
