@@ -10,8 +10,8 @@ module Rakurai
     config = Rakurai::Config.load("#{File.dirname(__FILE__)}/../config.yaml")
     @server = Rack::Server.new(
       server: :webrick,
-      Host: local_ip,
       Port: config.port,
+      BindAddress: "0.0.0.0",
       app: Rakurai::Server.new(config)
     )
     @server.start
