@@ -18,5 +18,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_runtime_dependency 'rack'
+  gem.add_runtime_dependency 'rack-stream'
+  gem.add_runtime_dependency 'thin'
 
 end

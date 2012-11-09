@@ -2,33 +2,19 @@ require "rakurai/version"
 
 module Rakurai
 
+  require 'rack/stream'
+
   require 'rakurai/server'
   require 'rakurai/config'
   require 'rakurai/agent'
+  require 'rakurai/response'
 
   def self.start
     config = Rakurai::Config.load("#{File.dirname(__FILE__)}/../config.yaml")
-    @server = Rack::Server.new(
-      server: :webrick,
-      Port: config.port,
-      BindAddress: "0.0.0.0",
-      app: Rakurai::Server.new(config)
-    )
-    @server.start
+    app = Rack::Builder.app do
+      use Rack::Stream
+      run Rakurai::Server.new(config)
+    end
+    app
   end
-
-  private
-   # networking - Getting the Hostname or IP in Ruby on Rails - Stack Overflow
-   # http://stackoverflow.com/questions/42566/getting-the-hostname-or-ip-in-ruby-on-rails
-   def self.local_ip
-     # turn off reverse DNS resolution temporarily
-     orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true
-
-     UDPSocket.open do |s|
-       s.connect('8.8.8.8', 1)
-       s.addr.last
-     end
-   ensure
-     Socket.do_not_reverse_lookup = orig
-   end
 end

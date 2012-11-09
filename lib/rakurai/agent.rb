@@ -10,12 +10,18 @@ module Rakurai
       @password  = password
     end
 
-    def request(method, path)
+    def request(method, path, &block)
       url = URI.parse("#{@base_uri}#{path}")
       req = http_request(method, url.path)
+
       req.basic_auth @username, @password
-      response = Net::HTTP.new(url.host, url.port).start do |http|
-        http.request(req)
+
+      response = nil
+      Net::HTTP.new(url.host, url.port).start do |http|
+        http.request(req) do |res|
+          response = Rakurai::Response.new(res)
+          res.read_body(&block)
+        end
       end
       response
     end

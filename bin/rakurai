@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env sh
 
-$: << './lib/'
-require './lib/rakurai'
-
-Rakurai.start
+thin start -R bin/rakurai-server.ru
