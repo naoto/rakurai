@@ -2,7 +2,8 @@ require "rakurai/version"
 
 module Rakurai
 
-  require 'rack/stream'
+  require 'rack'
+  require 'servolux'
 
   require 'rakurai/server'
   require 'rakurai/config'
@@ -11,10 +12,11 @@ module Rakurai
 
   def self.start
     config = Rakurai::Config.load("#{File.dirname(__FILE__)}/../config.yaml")
-    app = Rack::Builder.app do
-      use Rack::Stream
-      run Rakurai::Server.new(config)
-    end
-    app
+    @server = Rack::Server.new(
+      server: :thin,
+      Port: config.port,
+      app: Rakurai::Server.new(config)
+    )
+    @server.start
   end
 end

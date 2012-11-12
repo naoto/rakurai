@@ -17,12 +17,10 @@ module Rakurai
       headers
     end
     
-    def body(&block)
-      block.call @b
-    end
-
-    def append(b)
-      @b = b
+    def each
+      @response.read_body do |body|
+        yield body
+      end
     end
 
   end
