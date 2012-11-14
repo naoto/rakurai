@@ -14,17 +14,30 @@ module Rakurai
       @password  = password
     end
 
-    def request(method, path)
+    def request(method, path, env)
+
       url = URI.parse("#{@base_uri}#{path}")
       req = http_request(method, url.path)
       req.basic_auth @username, @password
 
+      %w(Accept Accept-Encoding Accept-Charset
+         X-Requested-With Referer User-Agent Cookie
+         Authorization).each do |header|
+          key = "HTTP_#{header.upcase.gsub('-', '_')}"
+          req[header] = env[key]
+      end
+
       @piper = Servolux::Piper.new 'r', :timeout => 30
+
       @piper.child do
         Net::HTTP.new(url.host, url.port).start do |http|
           http.request(req) do |res|
+
             response_headers = {}
-            res.each_header {|k,v| response_headers[k] = v}
+            res.each_header {|k,v| 
+              response_headers[k] = v unless "accept-ranges" == k.downcase
+            }
+
             @piper.puts res.code.to_i
             @piper.puts response_headers
 
@@ -33,14 +46,16 @@ module Rakurai
             end
 
             @piper.puts :done
+
           end
         end
       end
 
       @piper.parent do
         @status = read_from_child
-        @headers = HeaderHash.new(read_from_child)
+        @headers = read_from_child
       end
+      [@status, @headers]
     rescue => e
       if @piper
         @piper.parent { raise }
@@ -53,23 +68,11 @@ module Rakurai
     end
 
     def each
-      chunked = @headers["Transfer-Encoding"] == "chunked"
-      term = "\r\n"
-      
       while chunk = read_from_child
         break if chunk == :done
-        if chunked
-          size = bytesize(chunk)
-          next if size == 0
-          yield [size.to_s(16), term, chunk, term].join
-        else
-          yield chunk
-        end
+        yield chunk
       end
-
-      yield ["0", term, "", term].join if chunked
     end
-
 
     private
      def http_request(method, path)

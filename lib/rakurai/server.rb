@@ -1,14 +1,29 @@
 module Rakurai
-  class Server
+  class Server < Sinatra::Base
 
-    def initialize(config)
-      @agent = Agent.new(config.base_uri, config.username, config.password)
+    set :protection, :except => [:frame_options, :xss_header]
+    
+    configure do
+      @@config = Config::load("#{File.dirname(__FILE__)}/../../config.yaml")
     end
 
-    def call(env)
-      req = Rack::Request.new(env)
-      @agent.request(req.request_method, req.path)
-      [@agent.status, @agent.headers, @agent]
+    get '/*' do
+      puts request.path
+      @agent = Agent.new(@@config.base_uri, @@config.username, @@config.password)
+      @status, @headers = @agent.request(request.request_method, request.path, request.env)
+
+      response.status = @status
+      @headers.each do |k,v|
+        key = k.split("-").map do |x| x.gsub!(/^(.)/){ |w| w.upcase! }  end.join("-")
+        headers[key] =v
+      end
+
+      stream do |out|
+        @agent.each do |data|
+          out << data
+        end
+      end
+
     end
 
   end

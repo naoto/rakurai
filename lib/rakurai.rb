@@ -2,21 +2,16 @@ require "rakurai/version"
 
 module Rakurai
 
-  require 'rack'
   require 'servolux'
+  require 'sinatra'
+  require 'net/http'
+  require 'uri'
 
-  require 'rakurai/server'
-  require 'rakurai/config'
-  require 'rakurai/agent'
-  require 'rakurai/response'
+  autoload :Server, 'rakurai/server'
+  autoload :Config, 'rakurai/config'
+  autoload :Agent,  'rakurai/agent'
 
   def self.start
-    config = Rakurai::Config.load("#{File.dirname(__FILE__)}/../config.yaml")
-    @server = Rack::Server.new(
-      server: :thin,
-      Port: config.port,
-      app: Rakurai::Server.new(config)
-    )
-    @server.start
+    Server.run! :port => 7070
   end
 end

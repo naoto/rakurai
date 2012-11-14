@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
+#-*- coding; utf-8 -*-
 
-$: << './lib/'
 require './lib/rakurai'
 
 Rakurai.start
