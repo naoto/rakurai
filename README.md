@@ -1,24 +1,29 @@
 # Rakurai
 
-Rakurai is basic auth pass server
+Rakurai is Basic Authentication Pass Server
 
 ## Installation
+
+Git clone
+
+    $ git clone https://github.com/naoto/rakurai.git
 
 And then execute:
 
     $ bundle install 
 
+Or [Bundlizer](http://github.com/Tomohiro/bundlizer) install
+
+    $ bundlizer install naoto/rakurai
+
 ## Configuration
 
 Write config.yaml
 
-```yaml
----
-base_uri: "http://localhost"
-username: "user"
-password: "pass"
-port: 9000
-```
+ * base_uri: Send Server URL to Root
+ * username: Basic Authentication User
+ * password: Basic Authentication Pass
+ * port: Use rakurai Bind Port
 
 ## Usage
 
