@@ -23,13 +23,16 @@ Write config.yaml
  * base_uri: Send Server URL to Root
  * username: Basic Authentication User
  * password: Basic Authentication Pass
- * port: Use rakurai Bind Port
 
 ## Usage
 
 ```shell
 $ bundle exec bin/rakurai
 ```
+
+execute Option
+
+ * `-p`, `--port`   :Ruckup Port
 
 ## Contributing
 
