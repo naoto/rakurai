@@ -19,8 +19,13 @@ module Rakurai
       url = URI.parse("#{@base_uri}#{path}")
       req = http_request(method, url.path)
       req.basic_auth @username, @password
+      
+      env.each do |k,v|
+        puts "#{k} => #{v}"
+      end
 
-      %w(Accept Accept-Encoding Accept-Charset
+      %w(VERSION HOST RANGE X_PLAYBACK_SESSION_ID
+         Accept Accept-Encoding Accept-Charset
          X-Requested-With Referer User-Agent Cookie
          Authorization).each do |header|
           key = "HTTP_#{header.upcase.gsub('-', '_')}"

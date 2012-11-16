@@ -8,14 +8,12 @@ module Rakurai
     end
 
     get '/*' do
-      puts request.path
       @agent = Agent.new(@@config.base_uri, @@config.username, @@config.password)
       @status, @headers = @agent.request(request.request_method, request.path, request.env)
 
       response.status = @status
       @headers.each do |k,v|
-        key = k.split("-").map do |x| x.gsub!(/^(.)/){ |w| w.upcase! }  end.join("-")
-        headers[key] =v
+        headers[k] = v
       end
 
       stream do |out|
